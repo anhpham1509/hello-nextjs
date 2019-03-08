@@ -1,85 +1,45 @@
 import Layout from '../components/MyLayout.js';
 import Link from 'next/link';
-import fetch from 'isomorphic-unfetch';
+import loadDB from '../lib/load-db';
 
-const getPosts = () => {
-  return [
-    {slug: 'hello-nextjs', title: 'Hello Next.js'},
-    {slug: 'learn-nextjs', title: 'Learn Next.js is awesome'},
-    {slug: 'deploy-nextjs', title: 'Deploy apps with ZEIT'}
-  ];
-};
-
-const PostLink = ({post}) => (
+const StoryLink = ({id, title}) => (
   <li>
-    <Link as={`/post/${post.slug}`} href={`/post?title=${post.title}`}>
-      <a>{post.title}</a>
+    <Link as={`/post/${id}`} href={`/post?id=${id}`}>
+      <a>{title}</a>
     </Link>
   </li>
 );
 
-const ShowLink = ({show}) => (
-  <li>
-    <Link as={`/show/${show.id}`} href={`/show?id=${show.id}`}>
-      <a>{show.name}</a>
-    </Link>
-  </li>
-);
-
-const Index = props => (
+const Index = ({stories}) => (
   <Layout>
-    <h1>My Blog</h1>
+    <h1>Hacker News - Latest</h1>
     <ul>
-      {getPosts().map(post => (
-        <PostLink key={post.slug} post={post} />
+      {stories.map(story => (
+        <StoryLink key={story.id} id={story.id} title={story.title} />
       ))}
     </ul>
-
-    <hr />
-
-    <h1>Batman TV Shows</h1>
-    <ul>
-      {props.shows.map(({show}) => (
-        <ShowLink key={show.id} show={show} />
-      ))}
-    </ul>
-
-    <style jsx global>{`
-      h1,
-      a {
-        font-family: 'Arial';
-      }
-
-      ul {
-        padding: 0;
-      }
-
-      li {
-        list-style: none;
-        margin: 5px 0;
-      }
-
-      a {
-        text-decoration: none;
-        color: blue;
-      }
-
-      a:hover {
-        opacity: 0.6;
-      }
-    `}</style>
   </Layout>
 );
 
 Index.getInitialProps = async () => {
-  const res = await fetch('https://api.tvmaze.com/search/shows?q=batman');
-  const data = await res.json();
+  const db = await loadDB();
 
-  console.log(`Show data fetched. Count: ${data.length}`);
+  const ids = await db.child('topstories').once('value');
+  let stories = await Promise.all(
+    ids
+      .val()
+      .slice(0, 10)
+      .map(id =>
+        db
+          .child('item')
+          .child(id)
+          .once('value')
+      )
+  );
 
-  return {
-    shows: data
-  };
+  stories = stories.map(s => s.val());
+
+  return {stories};
 };
 
 export default Index;
