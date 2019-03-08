@@ -10,16 +10,28 @@ const getPosts = () => {
   ];
 };
 
+const PostLink = ({post}) => (
+  <li>
+    <Link as={`/post/${post.slug}`} href={`/post?title=${post.title}`}>
+      <a>{post.title}</a>
+    </Link>
+  </li>
+);
+
+const ShowLink = ({show}) => (
+  <li>
+    <Link as={`/show/${show.id}`} href={`/show?id=${show.id}`}>
+      <a>{show.name}</a>
+    </Link>
+  </li>
+);
+
 const Index = props => (
   <Layout>
     <h1>My Blog</h1>
     <ul>
       {getPosts().map(post => (
-        <li>
-          <Link as={`/post/${post.slug}`} href={`/post?title=${post.title}`}>
-            <a>{post.title}</a>
-          </Link>
-        </li>
+        <PostLink key={post.slug} post={post} />
       ))}
     </ul>
 
@@ -28,15 +40,11 @@ const Index = props => (
     <h1>Batman TV Shows</h1>
     <ul>
       {props.shows.map(({show}) => (
-        <li>
-          <Link as={`/show/${show.id}`} href={`/show?id=${show.id}`}>
-            <a>{show.name}</a>
-          </Link>
-        </li>
+        <ShowLink key={show.id} show={show} />
       ))}
     </ul>
 
-    <style jsx>{`
+    <style jsx global>{`
       h1,
       a {
         font-family: 'Arial';
