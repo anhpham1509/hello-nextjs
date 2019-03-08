@@ -2,7 +2,6 @@ const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const {ANALYZE} = process.env;
 
 module.exports = {
-  target: 'serverless',
   webpack: function(config) {
     if (ANALYZE) {
       config.plugins.push(
