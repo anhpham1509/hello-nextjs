@@ -7,17 +7,20 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node server.js",
     "build": "next build",
-    "start": "NODE_ENV=production PORT=8000 node server.js"
+    "start": "NODE_ENV=production PORT=8000 node server.js",
+    "analyze": "ANALYZE=true next build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "4.16.4",
+    "firebase": "5.8.6",
     "isomorphic-unfetch": "3.0.0",
     "next": "8.0.3",
     "react": "16.8.4",
     "react-dom": "16.8.4",
-    "react-markdown": "4.0.6"
+    "react-markdown": "4.0.6",
+    "webpack-bundle-analyzer": "3.1.0"
   }
 }
