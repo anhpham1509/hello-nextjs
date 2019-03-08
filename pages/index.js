@@ -2,36 +2,64 @@ import Layout from '../components/MyLayout.js';
 import Link from 'next/link';
 import fetch from 'isomorphic-unfetch';
 
-const PostLink = props => (
-  <li>
-    <Link as={`/post/${props.slug}`} href={`/post?title=${props.title}`}>
-      <a>{props.title}</a>
-    </Link>
-  </li>
-);
-
-const ShowLink = props => (
-  <li>
-    <Link as={`/show/${props.id}`} href={`/show?id=${props.id}`}>
-      <a>{props.name}</a>
-    </Link>
-  </li>
-);
+const getPosts = () => {
+  return [
+    {slug: 'hello-nextjs', title: 'Hello Next.js'},
+    {slug: 'learn-nextjs', title: 'Learn Next.js is awesome'},
+    {slug: 'deploy-nextjs', title: 'Deploy apps with ZEIT'}
+  ];
+};
 
 const Index = props => (
   <Layout>
     <h1>My Blog</h1>
     <ul>
-      <PostLink slug='hello-nextjs' title='Hello Next.js' />
-      <PostLink slug='learn-nextjs' title='Learn Next.js is awesome' />
-      <PostLink slug='deploy-nextjs' title='Deploy apps with Zeit' />
+      {getPosts().map(post => (
+        <li>
+          <Link as={`/post/${post.slug}`} href={`/post?title=${post.title}`}>
+            <a>{post.title}</a>
+          </Link>
+        </li>
+      ))}
     </ul>
+
+    <hr />
+
     <h1>Batman TV Shows</h1>
     <ul>
       {props.shows.map(({show}) => (
-        <ShowLink {...show} />
+        <li>
+          <Link as={`/show/${show.id}`} href={`/show?id=${show.id}`}>
+            <a>{show.name}</a>
+          </Link>
+        </li>
       ))}
     </ul>
+
+    <style jsx>{`
+      h1,
+      a {
+        font-family: 'Arial';
+      }
+
+      ul {
+        padding: 0;
+      }
+
+      li {
+        list-style: none;
+        margin: 5px 0;
+      }
+
+      a {
+        text-decoration: none;
+        color: blue;
+      }
+
+      a:hover {
+        opacity: 0.6;
+      }
+    `}</style>
   </Layout>
 );
 
